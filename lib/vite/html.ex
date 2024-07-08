@@ -77,6 +77,8 @@ defmodule Vite.HTML do
           manifest = File.read!(path) |> Jason.decode!()
 
           Vite.Cache.put(:manifest, manifest)
+
+          manifest
         else
           raise ManifestNotFoundError, manifest_file: path
         end
