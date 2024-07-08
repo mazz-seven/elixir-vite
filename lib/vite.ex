@@ -9,11 +9,11 @@ defmodule Vite do
 
   @doc false
   def start(_, _) do
-    unless Application.get_env(:vite, :version) do
+    unless Application.get_env(:vite, :env) do
       Logger.error("""
-      Project version is not configured for vite. Please set it in your config files:
+      Vite env is not configured. Please set it in your config files:
 
-      config :vite, :version, "#{latest_version()}"
+      config :vite, :env, config_env()
       """)
     end
 
@@ -35,6 +35,8 @@ defmodule Vite do
       unknown vite profile. Make sure the profile is defined in your config/config.exs file, such as:
 
           config :vite,
+            env: config_env(),
+            version: "5.3.1",
             #{profile}: [
               args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
               cd: Path.expand("../assets", __DIR__),
