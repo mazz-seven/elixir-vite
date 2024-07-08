@@ -79,4 +79,35 @@ defmodule Vite do
 
     run(exec, profile, args)
   end
+
+  def install(using \\ "npm") do
+    unless installed_version() != nil do
+      exec = System.find_executable(using)
+
+      if exec == nil do
+        raise "no pacakge management #{using} found. Please install it before."
+      end
+
+      opts = [
+        cd: Path.expand("./assets", File.cwd!()),
+        into: IO.stream(:stdio, :line),
+        stderr_to_stdout: true
+      ]
+
+      System.cmd(using, ["install", "vite", "-D"], opts)
+      |> elem(1)
+    end
+  end
+
+  def installed_version() do
+    case File.read(Path.expand("assets/package.json", File.cwd!())) do
+      {:ok, pkg} ->
+        pkg = Jason.decode!(pkg)
+
+        get_in(pkg, ["devDependencies", "vite"])
+
+      {:error, _} ->
+        nil
+    end
+  end
 end
